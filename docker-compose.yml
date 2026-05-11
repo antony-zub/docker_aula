@@ -1,0 +1,41 @@
+services:
+
+  app:
+    build: ./app
+
+    container_name: app_nomes
+
+    ports:
+      - "3015:3000"
+
+    depends_on:
+      - db
+
+    networks:
+      - minha_rede_publica
+      - minha_rede_privada
+
+  db:
+    image: postgres:17
+
+    container_name: postgres_nomes
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cadastro
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - minha_rede_privada
+
+volumes:
+  postgres_data:
+
+networks:
+
+  minha_rede_publica:
+
+  minha_rede_privada:

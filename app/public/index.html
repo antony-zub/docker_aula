@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Nomes</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 500px;
+      margin: 40px auto;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+
+    li {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cadastro de Nomes</h1>
+
+  <input type="text" id="nome" placeholder="Digite um nome">
+  <button onclick="adicionar()">Cadastrar</button>
+
+  <ul id="lista"></ul>
+
+  <script>
+    async function carregar() {
+      const response = await fetch('/nomes');
+      const nomes = await response.json();
+
+      const lista = document.getElementById('lista');
+      lista.innerHTML = '';
+
+      nomes.forEach(item => {
+        lista.innerHTML += `
+          <li>
+            ${item.nome}
+            <button onclick="remover(${item.id})">
+              Excluir
+            </button>
+          </li>
+        `;
+      });
+    }
+
+    async function adicionar() {
+      const nome = document.getElementById('nome').value;
+
+      await fetch('/nomes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nome })
+      });
+
+      document.getElementById('nome').value = '';
+
+      carregar();
+    }
+
+    async function remover(id) {
+      await fetch('/nomes/' + id, {
+        method: 'DELETE'
+      });
+
+      carregar();
+    }
+
+    carregar();
+  </script>
+
+</body>
+</html>
