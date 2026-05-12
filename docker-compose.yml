@@ -6,7 +6,7 @@ services:
     container_name: app_nomes
 
     ports:
-      - "3015:3000"
+      - "3000:3000"
 
     depends_on:
       - db
