@@ -1,41 +1,76 @@
+# =========================
+# Serviços da aplicação
+# =========================
 services:
-
+  # ---------------------------------
+  # Serviço da aplicação Node.js
+  # ---------------------------------
   app:
+    # Realiza o build da imagem utilizando o Dockerfile localizado na pasta ./app
     build: ./app
-
+    # Nome fixo do container Facilita identificação no Docker
     container_name: app_nomes
-
+    # Publicação de portas
     ports:
       - "3000:3000"
-
+    # Garante que o container do banco seja iniciado antes
     depends_on:
       - db
-
+    # Redes utilizadas pela aplicação
+    #
+    # Rede pública:
+    # acesso externo dos usuários
+    #
+    # Rede privada:
+    # comunicação interna com o banco
     networks:
       - minha_rede_publica
       - minha_rede_privada
-
+  # ---------------------------------
+  # Serviço PostgreSQL
+  # ---------------------------------
   db:
+    # Utiliza imagem pronta e oficial do PostgreSQL
     image: postgres:17
-
+    # Nome fixo do container
     container_name: postgres_nomes
-
+    # Variáveis de ambiente
+    # utilizadas na inicialização do PostgreSQL
     environment:
+      # Usuário administrador
       POSTGRES_USER: postgres
+      # Senha do banco
       POSTGRES_PASSWORD: postgres
+      # Banco criado automaticamente
       POSTGRES_DB: cadastro
-
+    # Volume persistente
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+    # Banco participa apenas
+    # da rede privada
+    #
+    # Não possui acesso externo
     networks:
       - minha_rede_privada
-
+# =========================
+# Volumes persistentes
+# =========================
 volumes:
+  # Volume utilizado para armazenar os dados do PostgreSQL
   postgres_data:
-
+# =========================
+# Redes Docker
+# =========================
 networks:
-
+  # Rede pública
+  #
+  # Utilizada para acesso
+  # externo à aplicação
   minha_rede_publica:
-
+  # Rede privada
+  #
+  # Utilizada para comunicação
+  # interna entre aplicação
+  # e banco de dados
   minha_rede_privada:
