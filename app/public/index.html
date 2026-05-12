@@ -1,80 +1,131 @@
 <!DOCTYPE html>
+
+<!-- Define idioma da página -->
 <html lang="pt-br">
+
 <head>
+
+  <!-- Codificação UTF-8 -->
   <meta charset="UTF-8">
+
+  <!-- Título da página -->
   <title>Cadastro de Nomes</title>
 
   <style>
+
+    /* Estilo da página */
     body {
       font-family: Arial;
       max-width: 500px;
       margin: 40px auto;
     }
 
+    /* Estilo dos campos */
     input, button {
       padding: 10px;
       margin: 5px;
     }
 
+    /* Espaçamento da lista */
     li {
       margin: 10px 0;
     }
+
   </style>
 </head>
+
 <body>
 
+  <!-- Título principal -->
   <h1>Cadastro de Nomes</h1>
 
+  <!-- Campo de nome -->
   <input type="text" id="nome" placeholder="Digite um nome">
+
+  <!-- Botão de cadastro -->
   <button onclick="adicionar()">Cadastrar</button>
 
+  <!-- Lista de nomes -->
   <ul id="lista"></ul>
 
   <script>
+
+    // Carrega nomes do banco
     async function carregar() {
+
+      // Busca lista na API
       const response = await fetch('/nomes');
+
+      // Converte JSON
       const nomes = await response.json();
 
+      // Seleciona lista HTML
       const lista = document.getElementById('lista');
+
+      // Limpa lista
       lista.innerHTML = '';
 
+      // Percorre nomes
       nomes.forEach(item => {
+
+        // Adiciona item na lista
         lista.innerHTML += `
           <li>
             ${item.nome}
+
             <button onclick="remover(${item.id})">
               Excluir
             </button>
+
           </li>
         `;
       });
     }
 
+
+    // Adiciona nome
     async function adicionar() {
+
+      // Obtém valor digitado
       const nome = document.getElementById('nome').value;
 
+      // Envia dados para API
       await fetch('/nomes', {
+
         method: 'POST',
+
         headers: {
           'Content-Type': 'application/json'
         },
+
         body: JSON.stringify({ nome })
       });
 
+      // Limpa campo
       document.getElementById('nome').value = '';
 
+      // Atualiza lista
       carregar();
     }
 
+
+    // Remove nome
     async function remover(id) {
+
+      // Chama API DELETE
       await fetch('/nomes/' + id, {
+
         method: 'DELETE'
       });
 
+      // Atualiza lista
       carregar();
     }
 
+
+    // Carrega lista inicial
     carregar();
+
   </script>
 
 </body>
